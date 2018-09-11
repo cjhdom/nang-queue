@@ -1,0 +1,23 @@
+{
+  "name": "nang-queue",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "hashmap": "^2.3.0",
+    "http-errors": "~1.6.2",
+    "jade": "~1.11.0",
+    "kafka-node": "^3.0.0",
+    "morgan": "~1.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  }
+}

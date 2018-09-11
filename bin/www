@@ -1,0 +1,116 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('nang-queue:server');
+var http = require('http');
+const waiting = require('../models/waiting');
+const active = require('../models/active');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3001');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port, '0.0.0.0');
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
+
+    if (port >= 0) {
+        // port number
+        return port;
+    }
+
+    return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+function onListening() {
+    var addr = server.address();
+    console.log('addr', addr);
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}
+
+var kafka = require('../services/kafka-message');
+var queue = require('../services/queue');
+
+/**
+ * active 현재 사용인원
+ * waiting 현재 대기인원
+ * incoming 번호표 젤 마지막값
+ * bounce 총 튕겨나간 값
+ * totalPass 총 접속한 값
+ * totalPass 총 대기 후 사용으로 넘어간 값
+ */
+setInterval(() => {
+    queue.moveWaitToActive();
+    queue.killExpiredActive();
+    kafka(JSON.stringify({
+        active: active.length(),
+        waiting: waiting.length(),
+        incoming: waiting.getSeq(),
+        bounce: waiting.getTotalBounce(),
+        totalPass: queue.getTotalPass(),
+        nextWaitingSeq: waiting.getTopSeq()
+    }), 'Monitoring');
+}, 3000);

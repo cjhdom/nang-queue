@@ -1,0 +1,17 @@
+var kafka = require('kafka-node');
+
+var HighLevelConsumer = kafka.HighLevelConsumer;
+var Client = kafka.Client;
+var topic = 'topic1';
+var client = new Client('172.30.1.26:2181');
+var topics = [{ topic: topic }];
+var options = { autoCommit: true, fetchMaxWaitMs: 1000, fetchMaxBytes: 1024 * 1024 };
+var consumer = new HighLevelConsumer(client, topics, options);
+
+consumer.on('message', function (message) {
+    console.log(message);
+});
+
+consumer.on('error', function (err) {
+    console.log('error', err);
+});
