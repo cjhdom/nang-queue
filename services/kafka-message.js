@@ -1,13 +1,15 @@
 var kafka = require('kafka-node');
 
 var Client = kafka.Client;
-var client = new Client('59.6.40.128:2181');
+// var client = new Client('59.6.40.128:2181');
+var client = new Client('172.30.1.31:2181');
 
 var HighLevelProducer = kafka.HighLevelProducer;
 var producer = new HighLevelProducer(client);
 var isReady = false;
 
 producer.on('ready', function () {
+    console.log('ready!');
     isReady = true;
 });
 

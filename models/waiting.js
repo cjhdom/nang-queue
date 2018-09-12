@@ -57,7 +57,7 @@ exports = module.exports = {
     },
 
     getTopSeq: function () {
-        return list[0].seq;
+        return list[0] && list[0].seq || 0;
     },
 
     getTotalBounce: function () {

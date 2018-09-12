@@ -27,26 +27,20 @@ exports.insert = function (guid) {
 
     const resultCode = getResultCode(activeData, waitingData);
 
-    switch (resultCode) {
-        case 0:
-            if (active.length() < maxActiveLength) {
-                console.log('free pass', active.length(), maxActiveLength);
-                active.insert(guid);
-            } else {
-                waiting.insert(guid);
-            }
-            break;
-        case 1:
+    if (resultCode === 0) {
+        if (active.length() < maxActiveLength) {
             active.insert(guid);
-            break;
-        default:
+        } else {
             waiting.insert(guid);
-            break;
+        }
     }
 
-    activeData1 = active.select(guid);
-    waitingData1 = waiting.select(guid);
-    console.log('huh', activeData1, waitingData1)
+    // penalty
+    if (waitingData) {
+        waiting.remove(guid);
+        waiting.insert(guid);
+    }
+
     return exports.select(guid);
 };
 
