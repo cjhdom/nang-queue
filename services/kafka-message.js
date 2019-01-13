@@ -34,6 +34,6 @@ exports = module.exports = function (message, topic) {
         {topic: topic, messages: message}
     ], function (err, data) {
         if (err) console.log(err);
-        // else console.log('send %d messages', data);
+        else console.log('send messages', JSON.stringify(data));
     });
 };

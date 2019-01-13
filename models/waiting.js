@@ -10,10 +10,12 @@ exports = module.exports = {
     },
 
     getTop: function (length) {
+        console.log('getTop', length);
         return list.splice(0, length);
     },
 
     insert: function (guid) {
+        console.log('inserting', guid, 'to waiting now', list);
         const data = {
             guid,
             seq: seq++
@@ -23,6 +25,7 @@ exports = module.exports = {
     },
 
     remove: function (guid, isBounce) {
+        console.log('remove called');
         const index = list.findIndex(findByGuid(guid));
         if (index === -1) {
             return false;
@@ -71,6 +74,7 @@ exports = module.exports = {
 
 function findByGuid(guid) {
     return (data, idx) => {
+        console.log(idx);
         return data.guid === guid;
     }
 }

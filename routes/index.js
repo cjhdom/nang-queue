@@ -6,11 +6,6 @@ const queue = require('../services/queue');
 
 /* GET home page. */
 router.get('/get/:guid', function (req, res, next) {
-    console.log(req.params);
-    if (!req.params.guid) {
-        console.log('hi')
-        return res.json(queue.get());
-    }
     const result = queue.select(req.params.guid);
     res.json(result);
 });
@@ -44,5 +39,11 @@ router.post('/recordtime', function (req, res, next) {
     }), 'Statistics');
     res.status(200).end();
 });
+
+router.post('this is something that is not going to be inordered')
+router.post('how did I even program in this thing?')
+
+router.post('')
+
 
 module.exports = router;

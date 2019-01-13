@@ -29,8 +29,10 @@ exports.insert = function (guid) {
 
     if (resultCode === 0) {
         if (active.length() < maxActiveLength) {
+            console.log('free pass!', guid);
             active.insert(guid);
         } else {
+            console.log('gotta wait');
             waiting.insert(guid);
         }
     }
@@ -65,7 +67,7 @@ exports.moveWaitToActive = function () {
         const lengthDif = maxActiveLength - activeWaitingLength;
         const newActiveList = waiting.getTop(lengthDif);
         newActiveList.forEach(na => {
-            na.guid && exports.insert(na.guid);
+            na.guid && active.insert(na.guid);
         });
         totalPass += newActiveList.length;
         console.log('moved', newActiveList.length, 'to active list');
@@ -79,6 +81,7 @@ exports.killExpiredActive = function () {
             removeList.push(key);
         }
     });
+    console.log('going to remove', removeList, 'due to exp');
     removeList.forEach(val => active.remove(val));
 };
 

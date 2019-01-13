@@ -8,7 +8,7 @@ exports = module.exports = {
         return map.get(guid) || null
     },
     insert: function (guid) {
-        const exp = +new Date() + (1000 * 60);
+        const exp = +new Date() + (1000 * 10);
         const seq = map.size + 1;
         map.set(guid, {
             exp,
@@ -18,7 +18,7 @@ exports = module.exports = {
             guid,
             exp,
             seq
-        }
+        };
         kafka(JSON.stringify(data), 'NextActive');
         return data;
     },
@@ -32,10 +32,8 @@ exports = module.exports = {
             return new Error("not found");
         }
 
-        const exp = new Date();
-        map.set(guid, Object.assign({}, data, {
-            exp
-        }));
+        const exp = +new Date() + (1000 * 10);
+        map.delete(guid).set(guid, Object.assign({}, data, {exp}));
 
         return map.get(guid);
     },

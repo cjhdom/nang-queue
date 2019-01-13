@@ -103,8 +103,8 @@ var queue = require('../services/queue');
  * totalPass 총 대기 후 사용으로 넘어간 값
  */
 setInterval(() => {
-    queue.moveWaitToActive();
     queue.killExpiredActive();
+    queue.moveWaitToActive();
     kafka(JSON.stringify({
         active: active.length(),
         waiting: waiting.length(),
